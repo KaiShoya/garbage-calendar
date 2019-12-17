@@ -20,22 +20,31 @@ function doPost(e: any) {
     case 'postback':
     default:
       break
-    case 'message':
+    case 'message': {
       const message = postData.events[0].message
       const msgArray = []
 
       if (message.type == 'text') {
         let date: Date
         if (message.text.indexOf('今日') != -1) {
-          // メッセージに「今日」が含まれていたら、今日収集するゴミの種類をリプライ通知する
+          // 今日収集するゴミの種類をリプライ通知する
           date = exception.checkExceptionDate(new Date())
-          const whatDay = garbage.whatDay(date)
-          if (whatDay) msgArray.push(Line.defaultMsg(whatDay))
+        } else if (message.text.indexOf('明日') != -1) {
+          // 明日収集するゴミの種類をリプライ通知する
+          const tomorrow = new Date()
+          tomorrow.setDate(tomorrow.getDate() + 1)
+          date = exception.checkExceptionDate(tomorrow)
+        } else {
+          date = exception.checkExceptionDate(new Date(message.text))
         }
+
+        const whatDay = garbage.whatDay(date)
+        if (whatDay) msgArray.push(Line.defaultMsg(whatDay))
       }
 
       if (msgArray.length > 0) Line.reply(replyToken, msgArray)
       break
+    }
   }
   return ContentService.createTextOutput(
     JSON.stringify({content: 'post ok'})
