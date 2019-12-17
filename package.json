@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/google-apps-script": "^1.0.7"
+  },
+  "scripts": {
+    "deploy": "clasp push -f && clasp deploy -i AKfycbw8ypOcvbT53hQNPkpvVMWyWaQD1XZTFLKqZn1YxRT9gH5oKbM"
   }
 }
